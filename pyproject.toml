@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "mbt"
+version = "0.1.0"
+description = ""
+authors = ["Tom Waterman <tjwaterman99@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+gitpython = "^3.1.30"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
