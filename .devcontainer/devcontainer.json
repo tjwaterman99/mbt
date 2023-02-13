@@ -3,7 +3,14 @@
 {
 	"name": "Python 3",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/python:3.9"
+	"image": "mcr.microsoft.com/devcontainers/python:3.9",
+	"remoteEnv": {
+		// Apparently this env var is not yet supported in 1.4+ so we need to
+		// always use --project-dir cli flag.
+		// "DBT_PROJECT_DIR": "/workspaces/mbt/tests/fixtures/test_project",
+		"DBT_PROFILES_DIR": "/workspaces/mbt/tests/fixtures/test_project",
+		"MBT_TEST_DATABASE_PATH": "/workspaces/mbt/mbt_test.db"
+	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
@@ -12,7 +19,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	"postCreateCommand": ".devcontainer/postCreateCommand.sh",
 
 	// Configure tool-specific properties.
 	// "customizations": {},

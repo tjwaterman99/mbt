@@ -1,2 +1,5 @@
 .pytest_cache/
 __pycache__/
+logs/
+# dbt_project.yml
+test.db
