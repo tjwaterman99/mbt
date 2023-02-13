@@ -15,13 +15,16 @@ test_project:
       schema: 'main'
 
       # connect schemas to paths: at least one of these must be 'main'
+      # In order to test defer, we'll need to modify the table names
+      # between dev and prod, as you can't query across databases or
+      # schemas when using SQLite
       schemas_and_paths:
-        main: "{{ env_var('MBT_TEST_DATABASE_PATH') }}"
+        main: "{{ env_var('MBT_DATABASE_PATH', '/workspaces/mbt/db.sqlite') }}"
 
       # directory where all *.db files are attached as schema, using base filename
       # as schema name, and where new schema are created. this can overlap with the dirs of
       # files in schemas_and_paths as long as there's no conflicts.
-      schema_directory: '/workspaces/mbt'
+      schema_directory: "{{ env_var('MBT_SCHEMA_DIRECTORY', '/workspaces/mbt/dbs') }}"
 
       # optional: list of file paths of SQLite extensions to load. see README for more details.
       # extensions:
