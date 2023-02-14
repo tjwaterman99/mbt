@@ -35,8 +35,8 @@ auto_defer_selector = dict(
 )
 
 
-def get_dbt_config():
-    dbt_config = _get_dbt_config(project_dir=config.dbt_project_dir)
+def get_dbt_config(args=None):
+    dbt_config = _get_dbt_config(project_dir=config.dbt_project_dir, args=args)
     dbt_config.get_default_selector_name = lambda: 'changed'
     dbt_config.selectors['changed'] = auto_defer_selector
     return dbt_config
@@ -45,11 +45,13 @@ def get_dbt_config():
 class DeferredBuildTask(BuildTask):
 
     def __init__(self, args, config):
-        super().__init__(args, config=get_dbt_config())
+        super().__init__(args, config=get_dbt_config(args=args))
 
-    # TODO: overwrite to pull the manifest from GitHub
-    # def _get_deferred_manifest():
-    #     pass
+    # TODO: implement the GitHub service to actually pull manifests
+    def _get_deferred_manifest(self):
+        from mbt.services.github import GitHub
+        artifacts = GitHub().artifacts()
+        return artifacts
 
 
 # TODO: This is not actually deferring to use the default selector.
@@ -99,17 +101,18 @@ class Dbt:
 
                 return res, success
 
-    def build(self, selector_name=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
-        args = parse_args(['build'] + sys.argv[2:])
+    def build(self, target=None, selector_name=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
+        args = parse_args(['build'])
         args.cls = DeferredBuildTask
         args.selector_name = selector_name
         args.select = select
         args.exclude = exclude
         args.defer = defer
+        args.target = target
         return self.call(args)
 
     def list(self, selector_name=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
-        args = parse_args(['list'] + sys.argv[2:])
+        args = parse_args(['list'])
         args.cls = DeferredListTask
         args.selector_name = selector_name
         args.select = select

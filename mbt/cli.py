@@ -53,10 +53,11 @@ def list():
 
 
 @cli.command()
-def build():
+@click.option('--target', '-t', help="The target to build against")
+def build(target):
     """
     Run all changed Models, Tests, Seeds, and Snapshots in DAG order
     """
 
     dbt = Dbt()
-    resp = dbt.build()
+    resp = dbt.build(target=target)

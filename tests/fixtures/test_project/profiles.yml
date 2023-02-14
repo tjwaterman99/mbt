@@ -2,9 +2,9 @@ config:
   send_anonymous_usage_stats: False
 
 test_project:
-  target: test
+  target: prod
   outputs:
-    test:
+    test: &test
       type: sqlite
 
       # sqlite locks the whole db on writes so anything > 1 won't help
@@ -34,3 +34,5 @@ test_project:
         # - "/path/to/sqlean/crypto.so"
         # - "/path/to/sqlean/math.so"
         # - "/path/to/sqlean/text.so"
+    prod:
+      <<: *test
