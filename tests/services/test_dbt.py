@@ -1,22 +1,18 @@
 from pytest import fixture
 from mbt.services.dbt import Dbt
+from conftest import Project
 
 
-@fixture
-def dbt() -> Dbt:
-    return Dbt()
+def test_config(project: Project):
+    assert project.dbt.config.project_name == 'test_project'
+    assert 'changed' in project.dbt.config.selectors
 
 
-def test_config(dbt: Dbt):
-    assert dbt.config.project_name == 'test_project'
-    assert 'changed' in dbt.config.selectors
-
-
-def test_dbt_build(dbt: Dbt):
-    resp = dbt.build()
+def test_dbt_build(project: Project):
+    resp = project.dbt.build()
     assert len(resp) > 0
 
 
-def test_dbt_list(dbt: Dbt):
-    resp = dbt.list()
+def test_dbt_list(project: Project):
+    resp = project.dbt.list()
     assert len(resp) > 0

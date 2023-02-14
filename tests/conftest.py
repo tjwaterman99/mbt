@@ -9,59 +9,8 @@ from pytest import fixture
 from dbt.main import handle_and_check
 from dbt.events.types import EndOfRunSummary
 from sqlite3 import Connection as SqliteConnection, Row
-
-
-@dataclass
-class DbtResult:
-    res: Any
-    success: Any
-    stdout: str
-    summary: EndOfRunSummary
-
-
-def process_stdout_mock(stdout_mock):
-    return '\n'.join([''.join(args[0]) for args, kwargs in stdout_mock.call_args_list])
-
-
-def process_run_summary(event_manager_mock):
-    messages = [args[0] for args, kwargs in event_manager_mock.call_args_list]
-    summary_events = [m for m in messages if type(m) == EndOfRunSummary]
-    if summary_events:
-        return summary_events[0] 
-
-
-
-
-
-class Dbt:
-    def __init__(self, project_dir=None):
-        self.project_dir = project_dir or os.getcwd()
-
-    def call(self, command):
-        with patch('builtins.print') as stdout_mock:
-            with patch('dbt.events.eventmgr.EventManager.fire_event') as event_manager_mock:
-                default_flags = ['--no-use-colors']
-                default_flags.extend(command)
-                # TODO: instead of using handle_and_check directly, we should create our own
-                # service to call dbt
-                res, success = handle_and_check(default_flags)
-                return DbtResult(
-                    stdout=process_stdout_mock(stdout_mock),
-                    summary=process_run_summary(event_manager_mock),
-                    res=res, 
-                    success=success
-                )
-
-    def debug(self, *args):
-        command = ['debug', '--project-dir', self.project_dir]
-        command.extend(args)
-        return self.call(command)
-
-    def build(self, *args):
-        command = ['build', '--project-dir', self.project_dir]
-        command.extend(args)
-        return self.call(command)
-
+from mbt.services.dbt import Dbt
+import dbt.logger
 
 
 @dataclass
@@ -106,6 +55,6 @@ def project(monkeypatch, fixtures_dir: Path, tmp_path: Path) -> Project:
 
     return Project(
         path=project_path,
-        dbt=Dbt(project_dir=str(project_path.absolute())),
+        dbt=Dbt(),
         db=db
     )
