@@ -1,0 +1,8 @@
+selectors:
+  - name: test_selector
+    description: Selector for testing purposes
+    default: false
+    definition:
+      union:
+        - method: path
+          value: models/example/my_first_dbt_model.sql
