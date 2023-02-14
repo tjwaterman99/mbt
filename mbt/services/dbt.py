@@ -56,7 +56,9 @@ class DeferredBuildTask(BuildTask):
 
 # TODO: This is not actually deferring to use the default selector.
 class DeferredListTask(ListTask):
-    pass
+    
+    def __init__(self, args, config):
+        super().__init__(args, config=get_dbt_config(args=args))
 
 
 class Dbt:
@@ -101,20 +103,20 @@ class Dbt:
 
                 return res, success
 
-    def build(self, target=None, selector_name=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
+    def build(self, target=None, selector=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
         args = parse_args(['build'])
         args.cls = DeferredBuildTask
-        args.selector_name = selector_name
+        args.selector_name = selector
         args.select = select
         args.exclude = exclude
         args.defer = defer
         args.target = target
         return self.call(args)
 
-    def list(self, selector_name=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
+    def list(self, selector=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
         args = parse_args(['list'])
         args.cls = DeferredListTask
-        args.selector_name = selector_name
+        args.selector_name = selector
         args.select = select
         args.exclude = exclude
         args.defer = defer

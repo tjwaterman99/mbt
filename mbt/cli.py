@@ -43,13 +43,14 @@ def debug():
 
 
 @cli.command()
-def list():
+@click.option('--selector', help="The named selector to use")
+def list(selector):
     """
     Print all changed models
     """
 
     dbt = Dbt()
-    resp = dbt.list()
+    resp = dbt.list(selector=selector)
 
 
 @cli.command()
