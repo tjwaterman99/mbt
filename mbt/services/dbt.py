@@ -52,6 +52,7 @@ class DeferredBuildTask(BuildTask):
     #     pass
 
 
+# TODO: This is not actually deferring to use the default selector.
 class DeferredListTask(ListTask):
     pass
 
@@ -109,7 +110,7 @@ class Dbt:
 
     def list(self, selector_name=None, select=None, exclude=None, defer=None) -> RunExecutionResult:
         args = parse_args(['list'] + sys.argv[2:])
-        args.cls = DeferredBuildTask
+        args.cls = DeferredListTask
         args.selector_name = selector_name
         args.select = select
         args.exclude = exclude
