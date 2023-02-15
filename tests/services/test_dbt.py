@@ -13,6 +13,14 @@ def test_get_dbt_args():
     assert args.selector == 'test'
 
 
+def test_dbt_call(project: Project):
+    resp, success = project.dbt.call('build')
+    assert success
+    assert 'test_my_first_dbt_model' in project.table_names()
+    assert 'test_my_second_dbt_model' in project.table_names()
+    assert len(project.table_names()) == 2
+
+
 def test_dbt_build(project: Project):
     resp, success = project.dbt.build()
     assert success
