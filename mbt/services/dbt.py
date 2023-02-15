@@ -135,18 +135,17 @@ class Dbt:
     def __init__(self, project_dir=None):
         self.project_dir = project_dir
 
-    def call(self, args):
+    def call(self, command, **kwargs):
+        args = get_dbt_args(command)
         if self.project_dir:
             args.project_dir = self.project_dir
         return run_dbt(args)
 
     def build(self, **kwargs) -> RunExecutionResult:
-        args = get_dbt_args('build', cls=DeferredBuildTask, **kwargs)
-        return self.call(args)
+        return self.call('build', cls=DeferredBuildTask, **kwargs)
 
     # TODO: can have an optional "quiet" arg here to just return the list
     # of nodes. From that list we can select other details about the model such as
     # its tests, or its schema + name, in order to retrieve the quality checks
     def list(self, **kwargs) -> RunExecutionResult:
-        args = get_dbt_args('list', cls=DeferredListTask, **kwargs)
-        return self.call(args)
+        return self.call('list', cls=DeferredListTask, **kwargs)
