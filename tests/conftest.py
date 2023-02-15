@@ -8,6 +8,8 @@ from pytest import fixture
 from sqlite3 import Connection as SqliteConnection, Row
 from mbt.services.dbt import Dbt
 from mbt.services.github import GitHub
+from mbt.cache import Cache
+from mbt.config import Config
 
 
 @dataclass
@@ -16,6 +18,7 @@ class Project:
     dbt: Dbt
     db: SqliteConnection
     github: GitHub
+    cache: Cache
 
     def query(self, sql):
         conn = self.db
@@ -44,6 +47,9 @@ def manifest(fixtures_dir: Path):
 def project(monkeypatch, manifest, fixtures_dir: Path, tmp_path: Path) -> Project:
     fixtures_path = fixtures_dir.absolute() / 'test_project'
     project_path = tmp_path.absolute() / 'test_project'
+    homedir = tmp_path.absolute() / '.mbt'
+    config = Config(homedir=homedir)
+    cache = Cache(path=config.cache_path)
     github = GitHub()
     
     monkeypatch.setattr('mbt.services.github.GitHub.get_latest_manifest', lambda self: manifest)
@@ -69,5 +75,6 @@ def project(monkeypatch, manifest, fixtures_dir: Path, tmp_path: Path) -> Projec
         path=project_path,
         dbt=Dbt(project_dir=str(project_path)),
         db=db,
-        github=github
+        github=github,
+        cache=cache
     )
