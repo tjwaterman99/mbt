@@ -23,6 +23,10 @@ class Project:
         resp = conn.execute(sql).fetchall()
         return resp
 
+    def table_names(self):
+        resp = self.query('select distinct name as name from sqlite_master')
+        return [r['name'] for r in resp]
+
 
 @fixture
 def fixtures_dir():
