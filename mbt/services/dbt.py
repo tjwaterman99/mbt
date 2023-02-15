@@ -25,9 +25,14 @@ def get_dbt_args(command: str, cls=None, project_dir=None, **kwargs) -> Namespac
     """
 
     default_args = parse_args([command])
+    select = kwargs.pop('select', None)
+    if type(select) == str:
+        select = [select]
+
     for k, v in kwargs.items():
         setattr(default_args, k, v)
 
+    default_args.select = select
     if cls:
         default_args.cls = cls
     if project_dir:
@@ -115,7 +120,6 @@ class DeferredBuildTask(BuildTask):
         super().__init__(args, config=get_dbt_config(args=args))
 
     def _get_deferred_manifest(self):
-        # Call this from the function instead
         from mbt.services.github import GitHub
         artifacts = GitHub().get_latest_manifest()
         return artifacts
@@ -138,7 +142,7 @@ class Dbt:
     # The type hint here is not correct, but I'm just leaving it
     # for now
     def call(self, command, **kwargs) -> RunExecutionResult:
-        args = get_dbt_args(command)
+        args = get_dbt_args(command, **kwargs)
         if self.project_dir:
             args.project_dir = self.project_dir
         return run_dbt(args)
