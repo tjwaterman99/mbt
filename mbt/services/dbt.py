@@ -135,7 +135,9 @@ class Dbt:
     def __init__(self, project_dir=None):
         self.project_dir = project_dir
 
-    def call(self, command, **kwargs):
+    # The type hint here is not correct, but I'm just leaving it
+    # for now
+    def call(self, command, **kwargs) -> RunExecutionResult:
         args = get_dbt_args(command)
         if self.project_dir:
             args.project_dir = self.project_dir
