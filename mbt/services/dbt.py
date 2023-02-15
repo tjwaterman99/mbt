@@ -117,7 +117,7 @@ class DeferredBuildTask(BuildTask):
     def _get_deferred_manifest(self):
         # Call this from the function instead
         from mbt.services.github import GitHub
-        artifacts = GitHub().artifacts()
+        artifacts = GitHub().get_latest_manifest()
         return artifacts
 
 

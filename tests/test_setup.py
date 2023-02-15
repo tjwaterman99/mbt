@@ -17,6 +17,10 @@ def test_dbt_project_dir_is_clean(project: Project):
     assert 'logs' not in files
     assert 'target' not in files
 
+
+def test_github_manifest_patch(manifest, project: Project):
+    assert project.github.get_latest_manifest() == manifest
+
 # TODO: make sure the build command always writes into a fresh database
 # and check that the database is getting the relevant tables populated.
 # We can add a method to the `project` object for querying the dbs

@@ -30,16 +30,19 @@ def fixtures_dir():
 
 
 @fixture
-def project(monkeypatch, fixtures_dir: Path, tmp_path: Path) -> Project:
-    fixtures_path = fixtures_dir.absolute() / 'test_project'
+def manifest(fixtures_dir: Path):
     manifest_path = fixtures_dir.absolute() / 'manifest.json'
-    project_path = tmp_path.absolute() / 'test_project'
-
     manifest = WritableManifest.read_and_check_versions(str(manifest_path))
+    return manifest
 
+
+@fixture
+def project(monkeypatch, manifest, fixtures_dir: Path, tmp_path: Path) -> Project:
+    fixtures_path = fixtures_dir.absolute() / 'test_project'
+    project_path = tmp_path.absolute() / 'test_project'
     github = GitHub()
-
-    monkeypatch.setattr('mbt.services.github.GitHub.artifacts', lambda self: manifest)
+    
+    monkeypatch.setattr('mbt.services.github.GitHub.get_latest_manifest', lambda self: manifest)
 
     copy_tree(str(fixtures_path), str(project_path))
 

@@ -9,6 +9,7 @@ readme = "README.md"
 python = ">=3.9"
 gitpython = "^3.1.30"
 dbt-core = "1.4"
+pygithub = "^1.57"
 
 
 [tool.poetry.group.dev.dependencies]

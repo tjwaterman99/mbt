@@ -23,3 +23,9 @@ def test_dbt_list(project: Project):
     resp, success = project.dbt.list()
     assert success
     assert len(resp) > 0
+
+
+def test_dbt_build_prod_with_target(project: Project):
+    resp, success = project.dbt.build(target='test')
+    assert success
+    assert len(resp) > 0
