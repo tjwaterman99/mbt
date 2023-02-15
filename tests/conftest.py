@@ -60,7 +60,7 @@ def project(monkeypatch, fixtures_dir: Path, tmp_path: Path) -> Project:
 
     return Project(
         path=project_path,
-        dbt=Dbt(),
+        dbt=Dbt(project_dir=str(project_path)),
         db=db,
         github=github
     )

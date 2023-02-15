@@ -1,18 +1,25 @@
 from pytest import fixture
-from mbt.services.dbt import Dbt
+from dbt.task.build import BuildTask
+from mbt.services.dbt import Dbt, get_dbt_args, get_dbt_config
 from conftest import Project
 
 
-def test_config(project: Project):
-    assert project.dbt.config.project_name == 'test_project'
-    assert 'changed' in project.dbt.config.selectors
+def test_get_dbt_args():
+    args = get_dbt_args('build')
+    assert args.cls == BuildTask
+
+
+    args = get_dbt_args('build', selector='test')
+    assert args.selector == 'test'
 
 
 def test_dbt_build(project: Project):
-    resp = project.dbt.build()
+    resp, success = project.dbt.build()
+    assert success
     assert len(resp) > 0
 
 
 def test_dbt_list(project: Project):
-    resp = project.dbt.list()
+    resp, success = project.dbt.list()
+    assert success
     assert len(resp) > 0
