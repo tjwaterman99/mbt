@@ -24,7 +24,8 @@ def test_dbt_build(project: Project):
     resp, success = project.dbt.build()
     assert success
     assert 'test_my_first_dbt_model' in project.table_names()
-    assert len(project.table_names()) == 1
+    assert 'test_my_second_dbt_model' in project.table_names()
+    assert len(project.table_names()) == 2
 
 
 def test_dbt_list(project: Project):
@@ -37,7 +38,8 @@ def test_dbt_build_with_prod_target(project: Project):
     resp, success = project.dbt.build(target='prod')
     assert success
     assert 'prod_my_first_dbt_model' in project.table_names()
-    assert len(project.table_names()) == 1
+    assert 'prod_my_second_dbt_model' in project.table_names()
+    assert len(project.table_names()) == 2
     
 
 def test_dbt_build_with_select(project: Project):
@@ -45,3 +47,14 @@ def test_dbt_build_with_select(project: Project):
     assert success
     assert 'test_my_first_dbt_model' in project.table_names()
     assert len(project.table_names()) == 1
+
+
+def test_dbt_build_with_defer(project: Project):
+    resp, success = project.dbt.call('build', target='prod')
+    assert success
+    
+    resp, success = project.dbt.build_deferred(select='my_second_dbt_model')
+    assert success
+    
+    assert 'test_my_second_dbt_model' in project.table_names()
+    assert len(project.table_names()) == 3

@@ -148,10 +148,13 @@ class Dbt:
         return run_dbt(args)
 
     def build(self, **kwargs) -> RunExecutionResult:
-        return self.call('build', cls=DeferredBuildTask, **kwargs)
+        return self.call('build', **kwargs)
 
-    # TODO: can have an optional "quiet" arg here to just return the list
-    # of nodes. From that list we can select other details about the model such as
-    # its tests, or its schema + name, in order to retrieve the quality checks
     def list(self, **kwargs) -> RunExecutionResult:
-        return self.call('list', cls=DeferredListTask, **kwargs)
+        return self.call('list', **kwargs)
+
+    def build_deferred(self, **kwargs) -> RunExecutionResult:
+        return self.call('build', cls=DeferredBuildTask, defer=True, **kwargs)
+
+    def list_deferred(self, **kwargs) -> RunExecutionResult:
+        return self.call('list', cls=DeferredListTask, defer=True, **kwargs)
